@@ -1,0 +1,26 @@
+{
+	"groupsToKeep": {
+		"vod": [
+			"Movies: Drama",
+			"Movies: Documentary",
+			"Movies: War",
+			"Movies: Comedy",
+			"Movies: Action",
+			"Movies: Horror",
+			"Movies: Thriller",
+			"Movies: Family",
+			"Movies: Western",
+			"Movies: Kids",
+			"Movies: Science-Fiction",
+			"Movies: Fantasy",
+			"Movies: Music",
+			"Movies: Marvel and DC",
+			"Movies: Adventure",
+			"Series: Netflix",
+			"Series: Other",
+			"Series: HBO ",
+			"Series: Apple TV+"
+		],
+		"live": ["Live: USA"]
+	}
+}
