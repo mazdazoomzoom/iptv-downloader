@@ -65,7 +65,7 @@ class DownloadQueue {
 	};
 }
 
-const queueFile = path.join(__dirname, '../data/downloadQueue.json');
+const queueFile = path.join(`${process.env.DATA_FOLDER}`, `downloadQueue.json`);
 module.exports = new DownloadQueue(queueFile);
 
 const downloadItem = (item, type) => {

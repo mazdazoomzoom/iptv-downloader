@@ -1,0 +1,18 @@
+extends default
+
+block content
+
+    .container.border.p-3.my-5
+        h1 Settings
+
+        hr
+
+        form(method='POST' action='/settings')
+            each group in groups
+                .mb-3
+                    .form-check
+                        input.form-check-input(type='checkbox' name='groups' id=group value=group checked=(userSettings.includes(group))) 
+                        label.form-check-label(for=group ) #{group}
+
+
+            button.btn.btn-primary(type='submit') Submit

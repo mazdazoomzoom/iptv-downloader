@@ -1,0 +1,17 @@
+extends default
+
+block content
+    .container.p-3.my-5
+        h1 IPTV Downloader
+
+        hr
+
+        .row
+            each group in data
+                .text-center.mb-4.col-12.col-md-6.col-lg-4
+                    .card(style="width: 18rem;")
+                        .card-body 
+                            h5.card-title #{group.name}
+                            p.card-text Items Available: #{group.contentAmount}
+                            a.btn.btn-primary(href=`/groups/${group.name}`) Explore
+

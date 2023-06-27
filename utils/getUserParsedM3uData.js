@@ -1,28 +1,31 @@
-const parsedM3uData = require('../data/parsedM3UData');
-const userSettings = require('../data/userSettings');
+const parsedM3uData = require('./parsedM3UData');
+const getUserSettings = require('./getUserSettings');
 
 const getUserParsedM3UData = {
-	fromStorage: () => {
-		const m3uData = parsedM3uData.get();
+    fromStorage: async () => {
+        const m3uData = { ...parsedM3uData.get() };
+        const userSettings = await getUserSettings();
 
-		for (const group in m3uData) {
-			if (!userSettings.groupsToKeep.vod.includes(group)) {
-				delete m3uData[group];
-			}
-		}
+        for (const group in m3uData) {
+            if (!userSettings.includes(group)) {
+                delete m3uData[group];
+            }
+        }
 
-		return m3uData;
-	},
+        return m3uData;
+    },
 
-	fromImport: (m3uData) => {
-		for (const group in m3uData) {
-			if (!userSettings.groupsToKeep.vod.includes(group)) {
-				delete m3uData[group];
-			}
-		}
+    fromImport: async (m3uData) => {
+        const userSettings = await getUserSettings();
 
-		return m3uData;
-	},
+        for (const group in m3uData) {
+            if (!userSettings.includes(group)) {
+                delete m3uData[group];
+            }
+        }
+
+        return m3uData;
+    },
 };
 
 module.exports = getUserParsedM3UData;

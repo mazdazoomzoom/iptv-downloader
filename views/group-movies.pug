@@ -1,0 +1,16 @@
+extends default
+
+block content
+    .container.p-3.my-5
+        h1 #{title}
+
+        hr
+
+        .row
+            each group in m3uData
+                .text-center.mb-4.col-12.col-md-6.col-lg-4
+                    .card(style="width: 18rem;")
+                        img.card-img-top(src=group.tvg.logo  alt="Logo")
+                        .card-body 
+                            h5.card-title #{group.tvg.name}
+
