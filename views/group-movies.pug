@@ -13,4 +13,32 @@ block content
                         img.card-img-top(src=group.tvg.logo  alt="Logo")
                         .card-body 
                             h5.card-title #{group.tvg.name}
+                            if (moviesInMediaFolder.includes(group.tvg.name.replace(/[:]/g, '')))
+                                | Already in Media Folder
+                            else
+                                button.btn.btn-primary(onclick=`addToDownloads( ${JSON.stringify(group)} )`) Download
+
+
+        script.
+            async function addToDownloads(group) {
+                console.log(group);
+                const downloadItem = {
+                    item: {
+                        name: group.tvg.name,
+                        url: group.url,
+                    },
+                    type: 'movie',
+                };
+
+                const response = await fetch('/downloads/add-to-downloads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(downloadItem),
+                });
+
+                const data = await response.json();
+                window.location.href = '/downloads';
+            }
 

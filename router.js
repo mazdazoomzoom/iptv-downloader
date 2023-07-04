@@ -5,6 +5,7 @@ const getUserParsedM3UData = require('./utils/getUserParsedM3uData');
 const downloadQueue = require('./services/downloadQueue');
 const getUserSettings = require('./utils/getUserSettings');
 const parsedM3UData = require('./utils/parsedM3UData');
+const getMediaFolderMovieContent = require('./utils/getMediaFolderMovieContent');
 
 router.get('/', async (req, res) => {
     let data = [];
@@ -40,28 +41,43 @@ router.get('/groups/:group', async (req, res) => {
     const group = req.params.group;
 
     if (m3uData[group].length > 0) {
-        return res.render('group-movies', { title: group, m3uData: m3uData[group] });
+        const moviesInMediaFolder = (await getMediaFolderMovieContent()).map((movie) => movie.replace(/[:]/g, ''));
+        return res.render('group-movies', { title: group, m3uData: m3uData[group], moviesInMediaFolder });
     }
 
     const tvShows = Object.keys(m3uData[group]);
     res.render('group-tv-shows', { title: group, m3uData: m3uData[group], tvShows });
 });
 
-router.get('/parsed-m3u-data', async (req, res) => {
-    const m3uData = await getUserParsedM3UData.fromStorage();
-    res.json(m3uData);
+router.get('/downloads', async (req, res) => {
+    const queue = await downloadQueue.getQueueItems();
+    res.render('downloads', { title: 'Downloads', queue });
 });
 
-router.get('/groups', async (req, res) => {
-    const m3uData = await getUserParsedM3UData.fromStorage();
-
-    const groups = Object.keys(m3uData);
-    res.json(groups);
+router.get('/downloads/progress', async (req, res) => {
+    const download = await downloadQueue.getCurrentDownload();
+    res.json({ download });
 });
 
 router.get('/downloads/clear', (req, res) => {
     downloadQueue.updateQueue([]);
-    res.json({ message: 'Download queue cleared' });
+    res.redirect('/downloads');
+});
+
+router.post('/downloads/add-to-downloads', async (req, res) => {
+    const triggerDownload = false;
+    const queue = await downloadQueue.getQueueItems();
+
+    if (queue.length === 0) {
+        triggerDownload = true;
+    }
+    downloadQueue.addItem(req.body);
+
+    if (triggerDownload) {
+        downloadQueue.triggerDownloadQueue();
+    }
+
+    res.json({ success: true });
 });
 
 module.exports = router;

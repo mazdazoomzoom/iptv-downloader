@@ -1,0 +1,42 @@
+extends default
+
+block content
+    .container.p-3.my-5
+        h1 #{title}
+
+        hr
+
+        h2 Current Download
+        ul#downloads.list-group
+            li.list-group-item No downloads in progress.
+
+        hr.mb-5
+
+        if queue.length
+            ul.list-group
+                each download in queue
+                    li.list-group-item
+                        | #{download.item.name}
+        else
+            p No downloads in queue.
+
+    script.
+        const getDownloadProgress = () => {
+            fetch('/downloads/progress')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.download.name) {
+                        return document.querySelector('#downloads').innerHTML = `
+                            <li class="list-group-item">
+                                <p class="mb-2">${data.download.name}</p>
+                                <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="${data.download.percentCompleted}" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: ${data.download.percentCompleted}%">${data.download.percentCompleted}%</div>
+                                </div>
+                            </li>`;
+                    }
+                    return document.querySelector('#downloads').innerHTML = `<li class="list-group-item"> No downloads in progress.</li>`;
+                });
+        };
+
+        getDownloadProgress();
+        setInterval(getDownloadProgress, 1000);
